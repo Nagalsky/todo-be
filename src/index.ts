@@ -9,6 +9,8 @@ import router from './routers'
 
 const app = express()
 
+app.get('/', (req, res) => res.send('Express on Vercel'))
+
 app.use(
 	cors({
 		credentials: true,
@@ -33,3 +35,5 @@ mongoose.connect(MONGO_URL)
 mongoose.connection.on('error', (error: Error) => console.log(console.error))
 
 app.use('/', router())
+
+module.exports = app
