@@ -1,5 +1,5 @@
 import express from 'express'
-import { createTodo, getTodos } from '../db/todos'
+import { createTodo, deleteTodoById, getTodoById, getTodos } from '../db/todos'
 
 export const getAllTodos = async (
 	req: express.Request,
@@ -37,41 +37,65 @@ export const createNewTodo = async (
 	}
 }
 
-// export const deleteUser = async (
-// 	req: express.Request,
-// 	res: express.Response
-// ) => {
-// 	try {
-// 		const { id } = req.params
+export const deleteTodo = async (
+	req: express.Request,
+	res: express.Response
+) => {
+	console.log('WHY?')
+	try {
+		const { id } = req.params
 
-// 		const deletedUser = await deleteUserById(id)
+		const deletedTodo = await deleteTodoById(id)
 
-// 		return res.json(deletedUser)
-// 	} catch (error) {
-// 		console.log('error:', error)
-// 		res.sendStatus(400)
-// 	}
-// }
+		return res.json(deletedTodo)
+	} catch (error) {
+		console.log('error:', error)
+		res.sendStatus(400)
+	}
+}
 
-// export const updateUser = async (
-// 	req: express.Request,
-// 	res: express.Response
-// ) => {
-// 	try {
-// 		const { id } = req.params
-// 		const { username } = req.body
+export const updateTodoStatus = async (
+	req: express.Request,
+	res: express.Response
+) => {
+	try {
+		const { id } = req.params
+		const { isCompleted } = req.body
 
-// 		if (!username) {
-// 			res.sendStatus(400).json({ error: 'Username does not exist' })
-// 		}
+		if (!id) {
+			res.sendStatus(400).json({ error: 'Todo does not exist' })
+		}
 
-// 		const user = await getUserById(id)
-// 		user.username = username
-// 		await user.save()
+		const todo = await getTodoById(id)
+		todo.isCompleted = isCompleted
+		await todo.save()
 
-// 		return res.status(200).json(user).end()
-// 	} catch (error) {
-// 		console.log('error:', error)
-// 		res.sendStatus(400)
-// 	}
-// }
+		return res.status(200).json(todo).end()
+	} catch (error) {
+		console.log('error:', error)
+		res.sendStatus(400)
+	}
+}
+
+export const updateTodoDescription = async (
+	req: express.Request,
+	res: express.Response
+) => {
+	try {
+		const { id } = req.params
+		const { description } = req.body
+
+		if (!id) {
+			res.sendStatus(400).json({ error: 'Todo does not exist' })
+		}
+
+		const todo = await getTodoById(id)
+		todo.description = description
+		await todo.save()
+
+		return res.status(200).json(todo).end()
+	} catch (error) {
+		console.log('error:', error)
+		res.sendStatus(400)
+	}
+}
